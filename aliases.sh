@@ -27,8 +27,8 @@ alias delete="git branch --delete"
 alias clean="git sync"
 
 # GitHub review & weekly report helpers
-alias reviews="gh search prs --review-requested=@me --state=closed --json author,url --jq '.[] | "\(.author.login): \(.url)"'"
-alias weekly="~/bin/gh-weekly-prs.sh"
+alias reviews="gh search prs --review-requested=@me --state=open --json author,url --jq '.[] | "\(.author.login): \(.url)"'"
+alias weekly="~/dev/helpful-scripts/gh-weekly-prs.sh"
 
 # Docker
 alias prune-docker="docker system prune -a -f --volumes"
