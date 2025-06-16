@@ -28,15 +28,19 @@ WEEK=$(date -j -f "%Y-%m-%d" "$START" +%V)  # ISO week number
 echo "[INFO] Date range: $START → $END (ISO week $WEEK)"
 
 # ---- 2. Run search via GitHub CLI -----------------------------------------
-GH_QUERY="author:@me updated:${START}..${END} is:pr"
+# Resolve GitHub username
+GH_USER=$(gh api user --jq .login)
 
-echo "[INFO] Running GitHub search: $GH_QUERY"
+echo "[INFO] Running GitHub search for $GH_USER, updated $START..$END"
 
 ISSUES=$(
-  gh pr list --state all \
-             --search "$GH_QUERY" \
-             --json number,title,url,state \
-             --jq '.[] | select(.state != "CLOSED") | "\(.number)\t\(.title)\t\(.url)"'
+  gh search prs \
+       --author "$GH_USER" \
+       --updated "${START}..${END}" \
+       --limit 100 \
+       --json number,title,url,state,repository \
+       --jq '.[] | select(.state != "closed") | "\(.repository.nameWithOwner)\t\(.number)\t\(.title)\t\(.url)"' \
+       | sort -t $'\t' -k1,1 -k2,2n
 )
 
 COUNT=$(echo "$ISSUES" | grep -c '^' || true)
@@ -54,14 +58,18 @@ echo "[INFO] Writing markdown to $TARGET"
 mkdir -p "$(dirname "$TARGET")"
 
 {
-  echo "# Week $WEEK ($START → $END)"
-  echo
-  echo "## Pull-requests updated during the week"
-  echo
+  echo "## Week $WEEK ($START → $END)"
   if [[ -z "$ISSUES" ]]; then
     echo "_No pull-requests updated during this period._"
   else
-    while IFS=$'\t' read -r NUM TITLE URL; do
+    current_repo=""
+    while IFS=$'\t' read -r REPO NUM TITLE URL; do
+      if [[ "$REPO" != "$current_repo" ]]; then
+        echo ""
+        echo "### $REPO"
+        echo ""
+        current_repo="$REPO"
+      fi
       echo "- [#$NUM]($URL) — $TITLE"
     done <<<"$ISSUES"
   fi
