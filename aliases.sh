@@ -1,6 +1,7 @@
 # --------- General aliases ---------
 
-alias edit="code ~/.zshrc"
+alias cursor="open -a Cursor"
+alias edit="cursor ~/.zshrc"
 alias save="source ~/.zshrc"
 alias cd="z" # requires zoxide to be installed and initialized in .zshrc
 
