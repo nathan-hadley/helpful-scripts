@@ -28,6 +28,9 @@ alias stash="git stash"
 alias unstash="git stash apply"
 alias delete="git branch --delete"
 
+source ~/dev/helpful-scripts/wtree.sh
+source ~/dev/helpful-scripts/wtmerge.sh
+
 # Synchronize with remote and remove local branches whose upstream was deleted
 cleanBranches(){
   git pull --prune
@@ -59,4 +62,4 @@ alias rmrf='rm -rf .parcel-cache dist node_modules'
 
 # --------- Android helpers ---------
 
-alias scrcpy='scrcpy --serial R5CX81AD2CP' 
+alias scrcpy='scrcpy --serial R5CX81AD2CP'
