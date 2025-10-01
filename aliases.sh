@@ -1,5 +1,5 @@
 # General aliases
-alias edit="code ~/.zshrc"
+alias edit="cursor ~/.zshrc"
 alias save="source ~/.zshrc"
 
 # Git helpers
@@ -23,8 +23,7 @@ alias push="git push"
 alias stash="git stash"
 alias unstash="git stash apply"
 alias delete="git branch --delete"
-# Clean up merged branches (requires global git alias `sync`)
-alias clean="git sync"
+alias clean="git branch --merged | grep -v "^\*\\|main" | xargs -n 1 git branch -d"
 
 # GitHub review & weekly report helpers
 alias weekly="~/dev/helpful-scripts/gh-weekly-prs.sh"
